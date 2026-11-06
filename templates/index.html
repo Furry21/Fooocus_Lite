@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Fooocus Lite // Avery Edition</title>
+    <style>
+        body {
+            background-color: #1a1a1e;
+            color: #f8f8f2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .panel {
+            background: #222430;
+            border: 2px solid #ff79c6;
+            border-radius: 12px;
+            padding: 20px;
+            width: 450px;
+            box-shadow: 0 0 20px rgba(255, 121, 198, 0.15);
+        }
+        h1, h3 {
+            color: #ff79c6;
+            margin-top: 0;
+            font-weight: 600;
+        }
+        .section {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #383a4c;
+            padding-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #8be9fd;
+        }
+        textarea, select, input[type="range"] {
+            width: 100%;
+            background: #2e303f;
+            border: 1px solid #44475a;
+            color: #f8f8f2;
+            border-radius: 6px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        input[type="range"] {
+            padding: 0;
+            cursor: pointer;
+        }
+        .radio-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        /* Твои фирменные неоновые кнопки-плитки */
+        .radio-btn {
+            background: #2e303f;
+            border: 1px solid #6272a4;
+            padding: 12px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.2s ease;
+            font-size: 14px;
+        }
+        .radio-btn input {
+            display: none;
+        }
+        .radio-btn.active {
+            border-color: #ff79c6;
+            background: rgba(255, 121, 198, 0.1);
+            box-shadow: inset 0 0 10px rgba(255, 121, 198, 0.5), 0 0 10px rgba(255, 121, 198, 0.3);
+            color: #ff79c6;
+            font-weight: bold;
+        }
+        .setting-item {
+            margin-bottom: 15px;
+        }
+        .setting-item label {
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn-gen {
+            background: #ff5555;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .btn-gen:hover {
+            background: #ff79c6;
+            box-shadow: 0 0 15px #ff79c6;
+        }
+        .btn-gen:disabled {
+            background: #44475a;
+            color: #6272a4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .result-panel {
+            flex: 1;
+            background: #222430;
+            border: 2px solid #44475a;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+        #result-image {
+            max-width: 100%;
+            max-height: 750px;
+            border-radius: 6px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+        }
+        
+        /* КРАСИВАЯ АНИМАЦИЯ МОЕЙ ПУШИСТОЙ ЛАПКИ */
+        @keyframes paw-pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px #ff79c6); }
+            50% { transform: scale(1.25); filter: drop-shadow(0 0 15px #ff79c6); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px #ff79c6); }
+        }
+        .avery-paw {
+            font-size: 55px;
+            display: inline-block;
+            animation: paw-pulse 1.3s infinite ease-in-out;
+            cursor: default;
+            user-select: none;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 900px; margin: 0 auto; padding: 20px;">
+    
+    <!-- Главная панель управления (всё по центру) -->
+    <div class="panel" style="width: 100%; text-align: center; margin-bottom: 20px;">
+        <h1>Foooocus Lite // Avery Edition</h1>
+        
+        <div class="section" style="margin-top: 15px; text-align: left;">
+            <label for="prompt">Prompt / Текстовый запрос:</label>
+            <textarea id="prompt" rows="3" placeholder="Опиши то, что хочешь увидеть..." style="width: 100%; margin-top: 5px;"></textarea>
+        </div>
+
+        <!-- Розовый кусок для позы ControlNet -->
+        <div class="form-group" style="margin-top: 15px; text-align: left;">
+            <label for="control_image" style="display: block; font-weight: bold; margin-bottom: 8px; color: #ff4a7d;">
+                Жесткая фиксация позы (Загрузить фото-референс):
+            </label>
+            <input type="file" id="control_image" accept="image/*" style="width: 100%; padding: 10px; background: #2d2d2d; border: 1px solid #ff4a7d; border-radius: 4px; box-sizing: border-box;">
+        </div>
+    </div>
+
+    <!-- ОКНО РЕЗУЛЬТАТА (Строго по центру под панелью) -->
+    <div id="resultContainer" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; border: 1px solid #ff4a7d; padding: 20px; background: #2d2d2d; border-radius: 10px; box-sizing: border-box;">
+        <h3 id="resultStatus" style="color: #ff4a7d; margin-bottom: 15px; font-weight: bold; text-align: center;">Результат генерации:</h3>
+        
+        <!-- Окно загрузки с лапками -->
+        <div id="loading-container" style="display: none; text-align: center; margin-bottom: 15px; width: 100%;">
+            <div id="pawBar" style="width: 0%; height: 8px; background: #ff4a7d; border-radius: 4px; transition: width 0.2s ease;"></div>
+            <p id="loadingStatus" style="color: #ffffff; font-size: 14px; margin-top: 10px;">Инициализация ядра Avery...</p>
+        </div>
+
+        <!-- Твоя итоговая картинка, строго отцентрованная -->
+        <img id="result-image" src="/static/cover.png" alt="Avery Result" style="max-width: 100%; max-height: 512px; border-radius: 8px; display: block; margin: 0 auto;" />
+    </div>
+
+    <!-- Твоя кнопка запуска (ставим её пониже окна результата, чтобы было удобно кликать) -->
+    <button id="btn-gen" onclick="startGeneration()" style="margin-top: 20px; padding: 12px 30px; background: #ff4a7d; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; max-width: 300px;">🌸 Создать арт</button>
+
+</div> <!-- Закрываем главный .container -->  
+
+        <div class="section">
+            <h3>Advanced (Тонкие настройки ИИ)</h3>
+            
+            <!-- НАША НОВАЯ КРУТИЛКА LORA НА СВОЕМ ЗАКОННОМ МЕСТЕ! -->
+            <div class="setting-item">
+                <label for="lora_scale">LoRA Weight (Сила LoRA): <span id="lora_val">0.75</span></label>
+                <input type="range" id="lora_scale" name="lora_scale" min="0.0" max="1.5" step="0.05" value="0.75" oninput="document.getElementById('lora_val').innerText = this.value">
+            </div>
+
+            <div class="setting-item">
+                <label for="guidance_scale">CFG Scale (Сила промпта): <span id="cfg_val">7.0</span></label>
+                <input type="range" id="guidance_scale" name="guidance_scale" min="1.0" max="20.0" step="0.5" value="7.0" oninput="document.getElementById('cfg_val').innerText = this.value">
+            </div>
+
+            <div class="setting-item">
+                <label for="steps">Steps (Шаги генерации): <span id="steps_val">30</span></label>
+                <input type="range" id="steps" name="steps" min="10" max="60" step="1" value="30" oninput="document.getElementById('steps_val').innerText = this.value">
+            </div>
+
+            <div class="setting-item">
+                <label for="model-select">Выбор модели (Checkpoints)</label>
+                <select id="model-select">
+                    {% for model in models %}
+                    <option value="{{ model }}">{{ model }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <label for="neg">Negative Prompt / Исключения</label>
+                <textarea id="neg" rows="2">worst quality, low quality, blurry</textarea>
+            </div>
+        </div>
+
+<script>
+function startGeneration() {
+    // 1. Привязка элементов интерфейса
+    const btn = document.getElementById('btn-gen') || document.getElementById('btn_gen');
+    const loadingContainer = document.getElementById('loading-container') || document.getElementById('loading_container');
+    const loadingStatus = document.getElementById('loadingStatus');
+    const resultStatus = document.getElementById('resultStatus');
+    const img = document.getElementById('result-image') || document.getElementById('result_image');
+    const controlImageInput = document.getElementById('control_image') || document.getElementById('control');
+
+    // Считываем значения крутилок и полей, которые уже есть на странице
+    const promptValue = document.getElementById('prompt')?.value || '';
+    const negValue = document.getElementById('negativePrompt')?.value || '';
+    const modelValue = document.getElementById('modelSelect')?.value || '';
+    const cfgValue = document.getElementById('cfgScale')?.value || 7.0;
+    const stepsValue = document.getElementById('steps')?.value || 30;
+    const loraValue = document.getElementById('loraScale')?.value || 0.75;
+
+    // Включаем режим ожидания
+    if (btn) btn.disabled = true;
+    if (loadingContainer) loadingContainer.style.display = 'block';
+    if (loadingStatus) loadingStatus.innerText = 'Инициализация ядра Avery... 0%';
+
+    // 2. Упаковываем все данные в FormData для POST запроса
+    const formData = new FormData();
+    formData.append('prompt', promptValue);
+    formData.append('negative_prompt', negValue);
+    formData.append('model', modelValue);
+    formData.append('aspect_ratio', '1:1'); // Фиксируем дефолт
+    formData.append('style', 'anime');       // Фиксируем дефолт
+    formData.append('guidance_scale', cfgValue);
+    formData.append('steps', stepsValue);
+    formData.append('lora_scale', loraValue);
+
+    if (controlImageInput && controlImageInput.files && controlImageInput.files[0]) {
+        formData.append('control_image', controlImageInput.files[0]);
+    }
+
+    // 3. Отправляем запрос на сервер
+    fetch('/generate-stream', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Ошибка сервера');
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        function readChunks() {
+            reader.read().then(({ value, done }) => {
+                if (done) return;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(6));
+
+                            // Обновляем статус прогресса
+                            if (data.step && loadingStatus) {
+                                loadingStatus.innerText = `Эйвери крутит тензоры... ${data.progress}% (Шаг ${data.step}/${data.total})`;
+                            }
+
+                            // Обработка успешного финала
+                            if (data.status === 'DONE') {
+                                if (btn) btn.disabled = false;
+                                if (loadingContainer) loadingContainer.style.display = 'none';
+                                
+                                if (resultStatus) {
+                                    resultStatus.innerHTML = `
+                                        <div style="text-align: center; padding: 10px;">
+                                            <span style="color: #00ff88; font-size: 18px; font-weight: bold; display: block; margin-bottom: 10px;">
+                                                ✨ Арт успешно сгенерирован!
+                                            </span>
+                                            <p style="color: #ffffff; font-size: 14px; margin: 5px 0;">
+                                                Изображение сохранено в папку проекта:
+                                            </p>
+                                            <code style="background: #1a1a1a; color: #ff4a7d; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 5px; font-family: monospace;">
+                                                /static/result.png
+                                            </code>
+                                        </div>
+                                    `;
+                                }
+                            }
+                        } catch (e) {
+                            console.error("Ошибка разбора SSE:", e);
+                        }
+                    }
+                }
+                readChunks(); // Читаем следующий кусок данных
+            });
+        }
+        readChunks(); // Запускаем цикл чтения
+    })
+    .catch(err => {
+        console.error("Критическая ошибка:", err);
+        if (btn) btn.disabled = false;
+        if (loadingContainer) loadingContainer.style.display = 'none';
+        if (loadingStatus) loadingStatus.innerText = "Ошибка генерации!";
+    });
+}
+
+</script>
+</body>
+</html>

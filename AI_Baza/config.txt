@@ -1,0 +1,20 @@
+{
+    "path_checkpoints": [
+        "/home/lin/AI_Baza/Fooocus/models/checkpoints"
+    ],
+    "path_loras": [
+        "/home/lin/AI_Baza/Fooocus/models/loras"
+    ],
+    "path_embeddings": "/home/lin/AI_Baza/Fooocus/models/embeddings",
+    "path_vae_approx": "/home/lin/AI_Baza/Fooocus/models/vae_approx",
+    "path_vae": "/home/lin/AI_Baza/Fooocus/models/vae",
+    "path_upscale_models": "/home/lin/AI_Baza/Fooocus/models/upscale_models",
+    "path_inpaint": "/home/lin/AI_Baza/Fooocus/models/inpaint",
+    "path_controlnet": "/home/lin/AI_Baza/Fooocus/models/controlnet",
+    "path_clip_vision": "/home/lin/AI_Baza/Fooocus/models/clip_vision",
+    "path_fooocus_expansion": "/home/lin/AI_Baza/Fooocus/models/prompt_expansion/fooocus_expansion",
+    "path_wildcards": "/home/lin/AI_Baza/Fooocus/wildcards",
+    "path_safety_checker": "/home/lin/AI_Baza/Fooocus/models/safety_checker",
+    "path_sam": "/home/lin/AI_Baza/Fooocus/models/sam",
+    "path_outputs": "/home/lin/AI_Baza/Fooocus/outputs"
+}

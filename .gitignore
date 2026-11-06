@@ -1,0 +1,16 @@
+# Виртуальное окружение (весит кучу ГБ, не нужно на GitHub)
+venv/
+.venv/
+env/
+
+# Кэш Python
+**/__pycache__/
+*.pyc
+
+# Исключаем тяжелые нейросетевые модели и чекпоинты
+AI_Baza/models/checkpoints/
+AI_Baza/models/loras/
+models/
+loras/
+
+
